@@ -18,8 +18,8 @@ import java.io.OutputStreamWriter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String LOGIN_FILE_NAME = "login.txt";
-    private final String PASSWORD_FILE_NAME = "password.txt";
+    private final static String LOGIN_FILE_NAME = "login.txt";
+    private final static String PASSWORD_FILE_NAME = "password.txt";
 
     EditText loginForm;
     EditText passwordForm;
@@ -88,13 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean writeFile(String fileName, String content) {
-        try {
+        try (FileOutputStream outputStream = openFileOutput(fileName, MODE_PRIVATE);
+             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+             BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
 
-            FileOutputStream outputStream = openFileOutput(fileName, MODE_PRIVATE);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-            BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
             bufferedWriter.write(content);
-            bufferedWriter.close();
             return true;
 
         } catch (FileNotFoundException e) {
@@ -111,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
 
         boolean isEquals = false;
 
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(openFileInput(fileName));
-            BufferedReader reader = new BufferedReader(inputStreamReader);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(openFileInput(fileName));
+             BufferedReader reader = new BufferedReader(inputStreamReader)) {
+
             String line = reader.readLine();
             StringBuilder sb = new StringBuilder();
 
